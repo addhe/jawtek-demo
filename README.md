@@ -6,7 +6,7 @@
 
 ## 📋 Daftar Prompt
 
-### 1. Infrastructure Provisioning
+### 1. Infrastructure Provisioning (GKE)
 
 **Prompt:**
 ```
@@ -19,11 +19,71 @@ Buatkan terraform module untuk GKE cluster di GCP dengan spesifikasi berikut:
 - Tambahkan variable untuk conditional autopilot (staging=false, production=true)
 ```
 
-**Use Case:** Provisioning infrastructure GCP yang repeatable dan cost-optimized.
+**Use Case:** Provisioning GKE cluster yang repeatable dan cost-optimized.
 
 ---
 
-### 2. Kubernetes Manifest Generation
+### 2. VM Provisioning (Compute Engine)
+
+**Prompt:**
+```
+Buatkan terraform module untuk provision VM di GCP Compute Engine dengan spesifikasi berikut:
+- Machine type: e2-medium (dev), n2-standard-4 (production)
+- Boot disk: Ubuntu 22.04 LTS, 50GB SSD persistent disk
+- Network: custom VPC, subnet sesuai environment
+- Firewall: allow SSH (IAP only), HTTP/HTTPS inbound, outbound unrestricted
+- Enable OS Login untuk akses SSH tanpa SSH key manual
+- Startup script: install Docker, docker-compose, dan agent monitoring (Ops Agent)
+- Disk encryption: Google-managed encryption key (dev), CMEK (production)
+- Labeling: environment, project, managed-by=terraform
+- Tambahkan instance template + managed instance group untuk production (2-4 auto-scaling)
+```
+
+**Use Case:** Provision VM yang konsisten, secure, dan siap pakai untuk berbagai workload.
+
+---
+
+### 3. VM Management & Operations
+
+**Prompt:**
+```
+Buatkan playbook lengkap untuk manage VM di GCP Compute Engine, meliputi:
+
+1. Routine Operations:
+   - Start/stop instance schedule (weekday 08:00-18:00) untuk hemat biaya
+   - OS patching otomatis menggunakan OS Patch Management
+   - Disk resize zero-downtime (expand + resize2fs)
+   - Snapshot schedule: daily incremental, retained 14 hari
+
+2. Monitoring & Logging:
+   - Ops Agent config untuk collect metrics (CPU, memory, disk, network)
+   - Ops Agent config untuk collect logs (syslog, auth.log, application logs)
+   - Cloud Monitoring alert: CPU >80%, disk >85%, memory >90%
+   - Log-based metric untuk error pattern detection
+
+3. Security:
+   - OS Login dengan 2FA enforcement
+   - Firewall rule: IAP-only SSH, no 0.0.0.0/0
+   - Regular vulnerability scanning
+   - Secret Manager integration untuk application credentials
+
+4. Automation Scripts:
+   - Bash script untuk health check (service status, disk usage, memory)
+   - Bash script untuk backup application data ke GCS
+   - Terraform untuk update instance template rolling update
+   - Cloud Scheduler untuk start/stop schedule
+
+Buatkan juga troubleshooting runbook untuk:
+- Instance unreachable (SSH connection failed)
+- High CPU/memory investigation
+- Disk full emergency response
+```
+
+**Use Case:** Operasional harian VM — dari provisioning sampai maintenance & troubleshooting.
+
+---
+
+### 4. Kubernetes Manifest Generation
 
 **Prompt:**
 ```
@@ -43,7 +103,7 @@ Buatkan Kubernetes deployment manifest untuk aplikasi web dengan:
 
 ---
 
-### 3. CI/CD Pipeline
+### 5. CI/CD Pipeline
 
 **Prompt:**
 ```
@@ -61,7 +121,7 @@ Buatkan Cloud Build pipeline (cloudbuild.yaml) untuk:
 
 ---
 
-### 4. Monitoring & Alerting
+### 6. Monitoring & Alerting
 
 **Prompt:**
 ```
@@ -83,7 +143,7 @@ Tambahan:
 
 ---
 
-### 5. Incident Response & Debugging
+### 7. Incident Response & Debugging
 
 **Prompt:**
 ```
@@ -106,7 +166,7 @@ Tolong:
 
 ---
 
-### 6. Security Hardening
+### 8. Security Hardening
 
 **Prompt:**
 ```
@@ -130,7 +190,7 @@ Buatkan Kubernetes security hardening checklist dan manifest untuk:
 
 ---
 
-### 7. Cost Optimization
+### 9. Cost Optimization
 
 **Prompt:**
 ```
@@ -155,7 +215,7 @@ Buatkan:
 
 ---
 
-### 8. Disaster Recovery
+### 10. Disaster Recovery
 
 **Prompt:**
 ```
@@ -182,7 +242,7 @@ Include:
 
 ---
 
-### 9. Terraform State Recovery
+### 11. Terraform State Recovery
 
 **Prompt:**
 ```
@@ -202,7 +262,7 @@ Berikan:
 
 ---
 
-### 10. Multi-Environment Deployment
+### 12. Multi-Environment Deployment
 
 **Prompt:**
 ```
@@ -238,6 +298,8 @@ Buatkan Terragrunt configuration untuk multi-environment deployment:
 - [Kubernetes Documentation](https://kubernetes.io/docs/)
 - [Google Cloud Build](https://cloud.google.com/build/docs)
 - [Terragrunt Documentation](https://terragrunt.gruntwork.io/docs/)
+- [GCP Compute Engine Documentation](https://cloud.google.com/compute/docs)
+- [Ops Agent Configuration](https://cloud.google.com/stackdriver/docs/solutions/agents/ops-agent)
 
 ---
 
