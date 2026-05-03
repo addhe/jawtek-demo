@@ -87,13 +87,13 @@ Tambahan:
 
 **Prompt:**
 ```
-Pod goclaw di namespace goclaw statusnya CrashLoopBackOff. 
+Pod <app-name> di namespace <namespace> statusnya CrashLoopBackOff. 
 Pod restart sudah 15 kali dalam 30 menit terakhir.
-Last log: "FATAL: connection to server at 'postgres:5432' failed"
+Last log: "FATAL: connection to server at '<db-service>:5432' failed"
 
-Cluster: goclaw-stg (GKE, asia-southeast2-a)
-Namespace: goclaw
-Service: goclaw (LoadBalancer, port 18790)
+Cluster: <cluster-name> (GKE, asia-southeast2-a)
+Namespace: <namespace>
+Service: <app-name> (LoadBalancer, port <port>)
 
 Tolong:
 1. Identifikasi root cause
@@ -113,7 +113,7 @@ Tolong:
 Buatkan Kubernetes security hardening checklist dan manifest untuk:
 - NetworkPolicy yang restrict semua egress kecuali:
   - DNS (UDP port 53)
-  - PostgreSQL internall (TCP port 5432)
+  - Database internal (TCP port 5432)
   - External HTTPS (TCP port 443)
 - PodSecurityPolicy/SecurityContext:
   - runAsNonRoot: true
@@ -161,7 +161,7 @@ Buatkan:
 ```
 Buatkan Disaster Recovery Plan untuk GKE cluster dengan:
 - RPO: 1 jam, RTO: 4 jam
-- Services: goclaw (web app), postgres (database), redis (cache)
+- Services: <web-app>, <database>, <cache>
 - Region: asia-southeast2 (primary), asia-southeast1 (DR)
 
 Include:
