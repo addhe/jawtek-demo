@@ -1,0 +1,36 @@
+# Google Cloud Ops Agent Configuration
+# Collects metrics and logs from the VM
+
+logging:
+  receivers:
+    syslog:
+      type: files
+      include_paths:
+        - /var/log/syslog
+        - /var/log/auth.log
+    app_logs:
+      type: files
+      include_paths:
+        - /var/log/docker/*.log
+        - /opt/app/logs/*.log
+  exporters:
+    google_cloud_logging:
+      type: google_cloud_logging
+
+metrics:
+  receivers:
+    hostmetrics:
+      type: hostmetrics
+      collection_interval: 60s
+  exporters:
+    google_cloud_monitoring:
+      type: google_cloud_monitoring
+
+service:
+  pipelines:
+    logs:
+      receivers: [syslog, app_logs]
+      exporters: [google_cloud_logging]
+    metrics:
+      receivers: [hostmetrics]
+      exporters: [google_cloud_monitoring]
