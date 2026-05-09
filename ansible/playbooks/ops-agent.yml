@@ -1,0 +1,63 @@
+---
+- name: Install and Configure Google Cloud Ops Agent
+  block:
+    - name: Download Ops Agent install script
+      get_url:
+        url: https://dl.google.com/cloudagents/add-google-cloud-ops-agent-repo.sh
+        dest: /tmp/add-google-cloud-ops-agent-repo.sh
+        mode: "0755"
+
+    - name: Install Ops Agent
+      script: /tmp/add-google-cloud-ops-agent-repo.sh --also-install
+
+    - name: Deploy Ops Agent config
+      copy:
+        dest: "{{ ops_agent_config_path }}"
+        content: |
+          logging:
+            receivers:
+              syslog:
+                type: files
+                include_paths:
+                  - /var/log/syslog
+                  - /var/log/auth.log
+              app_logs:
+                type: files
+                include_paths:
+                  - /var/log/docker/*.log
+                  - /opt/app/logs/*.log
+            exporters:
+              google_cloud_logging:
+                type: google_cloud_logging
+          metrics:
+            receivers:
+              hostmetrics:
+                type: hostmetrics
+                collection_interval: 60s
+            exporters:
+              google_cloud_monitoring:
+                type: google_cloud_monitoring
+          service:
+            pipelines:
+              logs:
+                receivers: [syslog, app_logs]
+                exporters: [google_cloud_logging]
+              metrics:
+                receivers: [hostmetrics]
+                exporters: [google_cloud_monitoring]
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Restart Ops Agent
+
+    - name: Ensure Ops Agent is running and enabled
+      service:
+        name: google-cloud-ops-agent
+        state: started
+        enabled: true
+
+  handlers:
+    - name: Restart Ops Agent
+      service:
+        name: google-cloud-ops-agent
+        state: restarted

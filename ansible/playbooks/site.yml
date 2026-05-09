@@ -1,0 +1,18 @@
+---
+- name: Configure all VMs
+  hosts: all
+  become: true
+  serial: 1
+  tasks:
+    - name: Wait for VM to be ready
+      wait_for_connection:
+        timeout: 300
+
+    - name: Include docker playbook
+      include_tasks: docker.yml
+
+    - name: Include ops-agent playbook
+      include_tasks: ops-agent.yml
+
+    - name: Include hardening playbook
+      include_tasks: hardening.yml

@@ -1,0 +1,13 @@
+plugin: google_cloud
+projects:
+  - ai-core-system-bot-stg
+zones:
+  - asia-southeast2-a
+filters:
+  - status = RUNNING
+  - name = app-server-*
+auth_kind: application
+groups:
+  dev: labels.environment == 'dev'
+  staging: labels.environment == 'staging'
+  production: labels.environment == 'production'

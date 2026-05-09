@@ -1,0 +1,10 @@
+---
+docker_users:
+  - awan
+
+ops_agent_config_path: /etc/google-cloud-ops-agent/config.yaml
+
+ntp_servers:
+  - time.google.com
+
+timezone: Asia/Jakarta
